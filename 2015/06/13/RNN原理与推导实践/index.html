@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>RNN原理与推导实践 | $\hat{y}$hat</title>
+  <meta name="author" content="Guan-Nan Wang">
+  
+  <meta name="description" content="complex network, machine learning, Alibaba">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="RNN原理与推导实践"/>
+  <meta property="og:site_name" content="$\hat{y}$hat"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="$\hat{y}$hat" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">$\hat{y}$hat</a></h1>
+  <h2><a href="/">Complexity behind Everything</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/about">关于我</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-06-12T16:00:00.000Z"><a href="/2015/06/13/RNN原理与推导实践/">2015-06-13</a></time>
+      
+      
+  
+    <h1 class="title">RNN原理与推导实践</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <blockquote>
+<p>本文根据Yann LeCun, Yoshua Bengio 和 Geoff Hinton历年来的论文和综述，以及Hinton于UofT所授课程的相关资料整理而成。此外还参考了Sutskever的博士论文相关部分。RNN有recurrent neural network 和 recursive neural network两种，前者指的是一种人工神经网络，后者指的是一种深度神经网络。本文讨论的是前者。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="前向神经网络"><a href="#前向神经网络">前向神经网络</a></h2><p><img src="/img/fw.png" alt=""></p>
+<p>前向神经网络（Multilayer Perceptron / Feedforward Network）具有以下属性：</p>
+<ul>
+<li><p>一个输入层，一个输出层，一个或多个隐含层。上图所示的神经网络中有一个三神经元的输入层、一个四神经元的隐含层、一个二神经元的输出层。</p>
+</li>
+<li><p>每一个神经元都可以看做是一个感知器（Perceptron）。
+<em>若每个神经元的激活函数都是线性函数，那么，任意层数的前向神经网络都可被约简成一个等价的单层感知器。实际上，前向神经网络本身可以使用任何形式的激活函数，譬如阶梯函数或logistic sigmoid function，但为了使用反向传播算法进行有效学习，激活函数必须限制为可微函数。</em></p>
+</li>
+<li><p>输入层的神经元作为隐含层的输入，同时隐含层的神经元也是输出层神经元的输入。</p>
+</li>
+<li><p>每条建立在神经元之间的连接都有一个权重w。</p>
+</li>
+<li><p>在 $t$ 层的每个神经元通常与前一层（ $t - 1$层）中的每个神经元都有连接。</p>
+</li>
+<li><p>为了处理输入数据，将输入向量赋到输入层中。在上例中，这个网络可以计算一个3维输入向量（由于只有3个输入层神经元）。假如输入向量是 [1, 0, 1]，你将第一个输入神经元输入1，中间的输入0，第三个输入1。这些值将被传播到隐含层，通过加权传递函数传给每一个隐含层神经元（这就是前向传播），隐含层神经元再计算输出（激活函数）。</p>
+</li>
+<li><p>输出层和隐含层一样进行计算，输出层的计算结果将转化为类标签的概率分布。当输出标签多于2个时，通常在输出层会设置与标签数目相等的神经元，并使用softmax激活函数函数。
+对从sigmoid到softmax的推导感兴趣请戳<a href="http://ufldl.stanford.edu/wiki/index.php/Softmax%E5%9B%9E%E5%BD%92" target="_blank" rel="external"><strong><em>这里</em></strong></a></p>
+</li>
+</ul>
+<p>神经网络实际上就是将大量感知机进行组合，用不同的方式、权重进行连接并作用在不同的激活函数上。</p>
+<h2 id="反向传播（Backpropagation）"><a href="#反向传播（Backpropagation）">反向传播（Backpropagation）</a></h2><p>前向神经网络需要通过样本训练不断逼近隐藏的样本标签的真实分布。与机器学习中大部分有监督算法类似，神经网络通过设定误差函数并利用反向传播算法来调整网络结构以达到准确预测未知样本的目的。虽然比传统的SGD更高效的梯度下降法有很多（有机会再展开介绍），然而本节涉及的的所有公式均可在这些梯度下降算法中进行使用。下图给出了一个三层神经网络的反向传播推导示意图。其中，每个神经元的激活函数和网络结构已经事先确定，反向传播的目的是调整网络中连边的权重。<strong>为了便于理解，其中的 $w_{ij}$ 代表节点 $i$ 指向节点 $j$ 的连边权重，异于大部分文献的叙述方式。</strong> $E$ 是定义的误差函数，一般可以取 $\frac{1}{2}\sum_{n\in training} {\left({\vec{t}}^n-{\vec{y}}^n\right)}^2$ ，其中 $\vec{t}$ 是实际的标签向量，$\vec{y}$ 是预测的标签向量。针对单个训练样本进行反向传播的计算如下图所示。上层是输出层，中间层是隐藏层。其中，输出神经元 $j$ 的输入是 $z_j$ ，$z_j = \sum_j{w_{ij} \cdot y_i}$ ，再通过sigmoid激活函数转换后输出 $y_j$。反向传播算法（BP）将所有输出层的误差导数传递到下一层的和它有链接关系的神经元上，这就是BP的由来。最终连边 $ij$ 上的权重调整梯度可以利用 $\frac{\partial E} {\partial z_j}$ 和 $\frac{\partial E} {\partial y_i}$ 求得。</p>
+<p><img src="/img/bp求导.png" alt=""></p>
+<p>下图取自2015年发表于Nature的<a href="http://www.nature.com/articles/nature14539" target="_blank" rel="external"><strong><em>综述文章</em></strong></a>，表示的是BP在包含2个隐藏层的前向网络下的求导，左边是前向的过程，右边就是BP关于输出层和隐藏层的求导。</p>
+<p><img src="/img/fp_bp.png" alt=""></p>
+<p>上文中的的BP算法是基于单个训练样本进行的，在实际应用中，常常还需要考虑：</p>
+<ul>
+<li>更新权值的频率：Online / mini batch / full batch</li>
+<li>权重更新的策略： SGD / Momentum / NAG / Adagrad / Adadelta / RMSprop，这些策略的直观比较参见<a href="http://imgur.com/a/Hqolp" target="_blank" rel="external">这里</a></li>
+<li>过拟合的处理： dropout / 权重衰减 / 权重共享 / 预训练</li>
+</ul>
+<p>以上几点今后有时间会逐一介绍，这些策略对于深度网络的设计非常重要。</p>
+<h2 id="RNN"><a href="#RNN">RNN</a></h2><p>RNN不同于前向神经网络，它的层内、层与层之间的信息可以双向传递，以便存储记忆一些知识，通常用于处理信息序列的task。比如上下文的预测、在线交易预测、实时翻译、动态手写识别等。由于这些数据中的样本之间存在顺序依赖关系，在进行学习时，RNN将在当前时刻的输入以及历史输入的基础上利用依赖关系对最终的预测结果进行预测。与LDS和HMM相比，RNN可以更高效的存储信息，允许利用更复杂的方法来更新规则。下面通过一个toy problem将RNN与传统的神经网络进行对比。这个问题是用来说明RNN可以做一般的前向NN不能做的task，即如何将两个二进制数进行相加。</p>
+<p>前向NN也可以处理这个问题，但是会存在以下缺点：</p>
+<ul>
+<li>必须要让网络知道输入和输出的最大数值，在这个问题中是不实际的</li>
+<li>前向NN的处理并不能应用在不同数位上，也就是说前向NN将两个数值进行相加的这个知识是存储在网络权重中，但是前半部分相加的知识和后半部分相加的知识不同，对应的权重也不同，不遵循数学上定义的加法。</li>
+</ul>
+<p><img src="/img/toyproblem.png" alt=""></p>
+<p>而RNN可以克服以上的缺陷，二进制加法版的RNN由2个输入单元和1个输出单元构成。从最低位开始，在每个时间步上给定两个输入数字，并在每个时间步上产生一个输出数字。这里的输出是两个时间步之前的列和（上图红色框起来部分），因为RNN需要一个时间步去基于输入来更新隐藏单元的输出和进位符，另一个时间步去基于隐藏单元的输出生成列和。隐藏层通过指向自身的连边将前一时刻隐藏层输出的进位符保留下来。按照时间顺序可以将toy problem中的RNN展开如下图所示，其中 $t$ 时刻隐藏层接收到的进位信息是隐藏层 $t-1$ 时刻的输出，记为net( $t-1$ )。</p>
+<p><img src="/img/unfold_toy.png" alt=""></p>
+<p>事实上，RNN都可以基于时间步进行展开，基本的RNN展开如下：</p>
+<p><img src="/img/unfoldRNN.png" alt=""></p>
+<p>通过将RNN展开为前向NN后，利用BP算法来训练RNN。由于展开后的前向NN的不同层之间的连边权重W是相等的，因此训练时需要加上这个条件，即：$W_{t-1,t} = W_{t,t+1}$ 。我们可以在BP中合并任何的线性约束，首先可以向往常一样计算梯度，然后通过修改梯度使得能够迎合这个约束。具体地说，如果开始的时候$W_{t-1,t} = W_{t,t+1}$，那么只需要确保$W_{t-1,t}$修改的值等于$W_{t,t+1}$修改的值：首先通过求$W_{t-1,t}$的导数，然后求$W_{t,t+1}$的导数，然后将它们相加或者求平均值，然后将这个值应用到更新$W_{t-1,t}$和$W_{t,t+1}$的过程中，所以如果权重开始就满足约束，那么更新后依然会满足约束。公式如下：
+$$ {W^{n+1}_{t-1,t}} = \alpha \cdot \left( \frac{\partial E}{\partial {W_{t-1,t}}} + \frac{\partial E}{\partial {W_{t-1,t}}} \right) + {W^n_{t-1,t}} $$</p>
+<p>$$ {W^{n+1}_{t,t+1}} = \alpha \cdot \left( \frac{\partial E}{\partial {W_{t,t+1}}} + \frac{\partial E}{\partial {W_{t,t+1}}} \right) + {W^n_{t,t+1}} $$</p>
+<p>在RNN上的BP算法又称为BP through time，与卷积神经网络（有时间会做一篇介绍）的BP相比非常类似。</p>
+<p>在上面的toy problem中，我们的RNN实际上是只记忆了前一时刻的网络信息，而RNN能做的远非如此。在1990年，Elman就利用RNN实现了英文文本的分词。他的做法可以概括如下：</p>
+<ul>
+<li>编码：26个英文字母用5个二进制位进行编码。</li>
+<li>构词：利用英文字母构造60个英文单词。</li>
+<li>造句：对60个英文单词进行组合构成上百条英文句子。</li>
+<li>首尾相连：对句子进行首尾相连，这样训练数据集中包含有上千个字符</li>
+<li>构造RNN，输入单元5个，输出单元5个。</li>
+<li>对于未断句的测试语句，RNN会根据当前输入字符之前的若干字符，来计算当前字符是新单词首字母的概率。如下图所示：</li>
+</ul>
+<p><img src="/img/wordrnn.png" alt=""></p>
+<p>训练好的CNN在读入句子时，从每个词的首字母开始，概率值不断降低，当下一个词出现时概率会突然升高。</p>
+<p>但是当前结构的RNN还是存在问题，当需要长效记忆的时候，会引发梯度弥散（爆炸和消失），下一节将对原因进行详细推导。</p>
+<h2 id="梯度消失问题"><a href="#梯度消失问题">梯度消失问题</a></h2><p>为了研究梯度弥散的成因，我们将隐藏层按时间展开，典型结构如下图所示：</p>
+<p><img src="/img/vanishing gradient.png" alt=""></p>
+<p>将其看做是前向网络，根据BP算法原理，$t-q$ 时刻单元v接收的误差信号为：</p>
+<p>$$ {\partial E_v}(t-q) =  f&#39;_v(y_v(t-q)) \sum_i{w_{vi}} {\partial E_i}(t-q+1) $$</p>
+<p>其中 $i$ 是指与第 $t-q$ 时刻的隐藏层中单元v相连的第 $t-q+1$ 时刻隐藏层中的神经元。连边$iv$的权重的更新公式为：</p>
+<p>$$ {\partial w_{vi}} =  \alpha \cdot {\partial E_i}(t-q+1) \cdot y_v(t-q) $$</p>
+<p>对以上公式进行递归就可以得到 ${t-q}$ 时刻误差信号对 ${t}$ 时刻误差信号的偏导：</p>
+<p>$$\frac{\partial {E_v(t-q)}}{\partial {E_u(t)}} = \cases{ {f&#39;_v \left( y_v(t - 1)\right)w_{vu} }&amp;{q = 1} \\ {f&#39;_v \left( y_v(t - q)\right) \sum_{i=1}^n {\frac{\partial {E_i(t-q+1)}}{\partial {E_u(t)}}w_{vi} } }&amp;{q &gt; 1} }$$</p>
+<p>其中，$n$ 表示隐藏层神经元的数目，这个递归式的含义不难理解，要求 ${t-q}$ 时刻误差信号对 ${t}$ 时刻误差信号的偏导，就先求出 $t-q+1$ 时刻对 $t$ 时刻的，然后把求出来的结果传到 $t-q$ 时刻，递归停止条件是 $q = 1$ 。以上的递归式展开后可以得到：</p>
+<p>$$\frac{\partial {E_v(t-q)}}{\partial {E_u(t)}} = \sum_{l_1=1}^n \cdots \sum_{l_{q-1}\ \ = 1 }^n T$$</p>
+<p>$$T = \prod_{m=1}^q {f&#39;_{lm} \left( y_{lm}(t - m)\right)w_{ l_{m-1}\ \ l_m}}$$</p>
+<p>整个结果式对 $T$ 求和的次数是$q^{n-1}$, 因此：
+如果 $|T| &gt; 1$，误差就会随着 $q$ 的增大而呈指数增长，网络的参数更新会引起非常大的震荡。
+如果 $|T| &lt; 1$，误差就会消失，导致学习无效，一般激活函数用simoid函数，它的倒数最大值是0.25, 权值最大值要小于4才能保证不会小于1。为了克服梯度弥散的问题，学者在RNN上做了一些限制，比较成功的网络模型包括LSTM结构（如下图所示），将在下一篇文章中作详细介绍。</p>
+<p><img src="/img/lstm.png" alt=""></p>
+<h3 id="参考文献"><a href="#参考文献">参考文献</a></h3><p>[1] Wim De Mulder, Steven Bethard, and Marie-Francine Moens. A survey on the application of recurrent neural networks to statistical language modeling. Computer Speech &amp; Language, 30(1):61-98, 2015.</p>
+<p>[2] Yoshua Bengio, Patrice Simard, and Paolo Frasconi. Learning long-term dependencies with gradient descent is difficult. Neural Networks, IEEE Transactions on, 5(2):157-166, 1994.</p>
+<p>[3] Jefferey L Elman. Finding structure in time. Cognitive science, 14(2):179-211, 1990. </p>
+<p>[4] Felix A Gers, Jurgen Schmidhuber, and Fred Cummins. Learning to forget:Continual prediction with LSTM. Neural computation, 12(10):2451-2471, 2000.</p>
+<p>[5] John Langford, Lihong Li, and Tong Zhang. Sparse online learning via truncated gradient. In Advances in neural information processing systems, pages 905-912, 2009.</p>
+<p>[6] Sutskever I. Training recurrent neural networks. University of Toronto, 2013.</p>
+<p>[7] Yann LeCun, Yoshua Bengio,  and Geoffrey Hinton. Deep learning. Nature, 2015.</p>
+<p>[8] Lipton Z C. A Critical Review of Recurrent Neural Networks for Sequence Learning. arXiv preprint arXiv:1506.00019, 2015.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/深度学习/">深度学习</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2015/06/13/RNN原理与推导实践/" data-title="RNN原理与推导实践" data-url="http://wangguannan.github.io/http://wangguannan.github.io/2015/06/13/RNN原理与推导实践/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'guannanwang90'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  </div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:wangguannan.github.io">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Chaos/">Chaos</a><small>1</small></li>
+  
+    <li><a href="/tags/复杂网络/">复杂网络</a><small>1</small></li>
+  
+    <li><a href="/tags/深度学习/">深度学习</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 Guan-Nan Wang
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
