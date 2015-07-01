@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>结构洞与社会资本 | $\hat{y}$hat</title>
+  <title>高斯过程与岭回归 | $\hat{y}$hat</title>
   <meta name="author" content="Guan-Nan Wang">
   
   <meta name="description" content="complex network, machine learning, Alibaba">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="结构洞与社会资本"/>
+  <meta property="og:title" content="高斯过程与岭回归"/>
   <meta property="og:site_name" content="$\hat{y}$hat"/>
 
   
@@ -52,30 +52,22 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-06-21T09:24:00.000Z"><a href="/2015/06/21/结构洞与社会资本/">2015-06-21</a></time>
+        <time datetime="2015-07-01T14:42:04.000Z"><a href="/2015/07/01/高斯过程与岭回归/">2015-07-01</a></time>
       
       
   
-    <h1 class="title">结构洞与社会资本</h1>
+    <h1 class="title">高斯过程与岭回归</h1>
   
 
     </header>
     <div class="entry">
       
         <blockquote>
-<p>本文根据Ronald Burt报告节选而成。Burt是结构洞(Structrual hole)理论发明人，社会资本(Social capital)理论奠基人、美国AAAS院士、计算社会学的大牛。</p>
+<p>高斯过程配上kernal后可以演绎出包罗万象的机器学习技法。本文说说高斯过程到岭回归的推导过程。如果今后有时间，我还会说说岭回归、PCA、Kmeans、SOM之间的关系。</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="组织网络中的结构洞"><a href="#组织网络中的结构洞">组织网络中的结构洞</a></h2><p>在组织网络中，组织中的成员为节点，领导-跟随关系为连边，从直观上来看，权利集中在节点簇的交汇处（下图中的带颜色的节点）。中心菱形的节点连接了各个部门的高管。</p>
-<p><img src="/img/Sociogram_1.png" alt=""></p>
-<h2 id="结构洞的演变"><a href="#结构洞的演变">结构洞的演变</a></h2><p>下图展示了一个雇员在扩展社会资本前后的网络变化。扩展前的constraint要比扩展后的高，研究表明拥有低constraint的人在创造力、学习能力、职位晋升和薪资方面都要高于高constraint的人。</p>
-<p><img src="/img/hole_eval.png" alt=""></p>
-<h2 id="量化指标"><a href="#量化指标">量化指标</a></h2><p>betweenness与constraint都可以衡量一个节点在网络中的中介性质。在计算时，constraint利用局部信息，运行效率要比betweenness高一些。一般constraint低betweenness高的节点是网络中的结构洞，constraint与betweenness中等的节点是网络中的聚簇的中心点，而constraint高betweenness低的节点是网络中的一般成员。</p>
-<p><img src="/img/hole_measure.png" alt=""></p>
-<p>constraint的计算公式：</p>
-<p>$$ C_i = \sum_jc_{ij} = \sum_j\left(  p_{ij} + \sum_qp_{iq}p_{qj} \right)^2$$</p>
-<p>其中, $ {j,q} \in nbr(i) $， $p_{ij}^2$ 衡量节点 $i$ 对节点 $j$的投入，$2p_{ij}\sum_qp_{iq}p_{qj}$衡量节点 $i$ 与节点 $j$ 之间传递信息的冗余， $ \left( \sum_qp_{iq}p_{qj} \right)^2 $ 代表节点 $i$ 从邻居接受、获得相同信息的程度。结构洞的特点是对单一节点投入低、信息传递的冗余低，收发信息种类多样化。</p>
-<h2 id="总结"><a href="#总结">总结</a></h2><p><img src="/img/hole_summarize.png" alt=""></p>
+<p>高斯过程回归的假设是：
+给定一些x的值（特征值），我们对y建模（预测值），并假设对应的这些y值服从 <strong>联合正态分布</strong>。</p>
 
       
     </div>
@@ -85,7 +77,7 @@
         
   
   <div class="tags">
-    <a href="/tags/复杂网络/">复杂网络</a>
+    <a href="/tags/小无相功/">小无相功</a>
   </div>
 
         
@@ -99,7 +91,7 @@
 
   <section id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2015/06/21/结构洞与社会资本/" data-title="结构洞与社会资本" data-url="http://wangguannan.github.io/http://wangguannan.github.io/2015/06/21/结构洞与社会资本/"></div>
+    <div class="ds-thread" data-thread-key="2015/07/01/高斯过程与岭回归/" data-title="高斯过程与岭回归" data-url="http://wangguannan.github.io/http://wangguannan.github.io/2015/07/01/高斯过程与岭回归/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
