@@ -87,7 +87,7 @@ K_{31} &amp; K_{32} &amp; K_{33}
 合法的协方差矩阵就是半正定矩阵 (symmetric) Positive Semi-definite Matrix。
 So far so good.
 在矩阵K中，可以使用kernal来计算相似性（根据Mercer Theorem）。支持向量及SVM中的RBF就是一种常用的kernal。在RBF的定义下，矩阵K中元素的计算如下：
-$$K_{ij} = e^{-\lambda \|x_i - x_j\|}$$</p>
+$$K_{ij} = e^{-\lambda \|x_i - x_j\|^2}$$</p>
 
       
     </div>
