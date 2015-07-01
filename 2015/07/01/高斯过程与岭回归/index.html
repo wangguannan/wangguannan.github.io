@@ -81,7 +81,13 @@ f_3
 K_{11} &amp; K_{12} &amp; K_{13}\\
 K_{21} &amp; K_{22} &amp; K_{23}\\
 K_{31} &amp; K_{32} &amp; K_{33}
-\end{bmatrix}\right)                    (1)$$</p>
+\end{bmatrix}\right)$$</p>
+<p>这个公式关键是协方差矩阵K。在这里引出了高斯过程的另一个重要假设：
+如果两个x比较相似（eg,空间中离得比较近），那么对应的y值的相关性也就较高。具体地说，针对上面的例子，如果x1离x2要比x3更近，那么依据假设 f3和f2 的correlation 要比 f3和f1的correlation 高。也就是说，协方差矩阵中的每个元素$K_{ij}$为对应的两个X值$x_i, x_j$之间的相似性度量。说到相似性度量，本文不准备引出metric learning，仅提及矩阵K的一个重要性质：
+合法的协方差矩阵就是半正定矩阵 (symmetric) Positive Semi-definite Matrix。
+So far so good.
+在矩阵K中，可以使用kernal来计算相似性（根据Mercer Theorem）。支持向量及SVM中的RBF就是一种常用的kernal。在RBF的定义下，矩阵K中元素的计算如下：
+$$K{ij} = e^{-\lamda \|x_i - x_j\|}$$</p>
 
       
     </div>
