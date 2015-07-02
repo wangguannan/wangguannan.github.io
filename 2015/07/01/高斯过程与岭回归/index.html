@@ -90,6 +90,22 @@ So far so good.
 <p>$$K_{ij} = e^{-\lambda \|x_i - x_j\|^2}$$</p>
 <p>当两个x空间中距离无穷远时，那么对应的y值的相关性为0，当两个x空间中距离为0时，那么对应的y值的相关性为1。在3个已知训练样本的基础上，对新来的样本$x^*$的$f^*$求解之前需要具备一个条件，那就是：
 <strong>$f^*$ 和 训练集里的$f_1$, $f_2$, $f_3$ 同属于一个（4维的）联合正态分布。用数学语言来表达就是：</strong></p>
+<p>$$\begin{bmatrix}
+f_1\\
+f_2\\
+f_3\\
+f_4
+\end{bmatrix} \sim N\left( \begin{bmatrix}
+0\\
+0\\
+0\\
+0
+\end{bmatrix} , \begin{bmatrix}
+K_{11} &amp; K_{12} &amp; K_{13} &amp; K_{1<em>}\\
+K_{21} &amp; K_{22} &amp; K_{23} &amp; K_{2</em>}\\
+K_{31} &amp; K_{32} &amp; K_{33} &amp; K_{3<em>}\\
+K_{</em>1} &amp; K_{<em>2} &amp; K_{</em>3} &amp; K_{**}
+\end{bmatrix}\right)$$</p>
 
       
     </div>
