@@ -109,9 +109,8 @@ K_{*1} &amp; K_{*2} &amp; K_{*3} &amp; K_{**}
 <p>其中，$ \begin{bmatrix}K_{11} &amp; K_{12} &amp; K_{13}\\ K_{21} &amp; K_{22} &amp; K_{23}\\ K_{31} &amp; K_{32} &amp; K_{33}
 \end{bmatrix} $ 是原先的矩阵$K$，$ \begin{bmatrix}K_{1*}\\ K_{2*}\\ K_{3*} \end{bmatrix} $ = $ \begin{bmatrix}K_{*1} &amp; K_{*2} &amp; K_{*3} \end{bmatrix} ^T $ 作为矩阵$K^*$。直接利用边缘分布性质可以求出$f^*$的分布:
 $$ f^* \sim N \left( \mu*, \sigma* \right) $$</p>
-<p>\mu* = K* ^T K^-1 \begin{bmatrix}f_1\\ f_2\\ f_3 \end{bmatrix}</p>
-<p>\sigma* = -K*^T K^-1 K* + K** = -K*^T K^-1 K* + 1
-$$</p>
+<p>$$\mu* = K* ^T K^-1 \begin{bmatrix}f_1\\ f_2\\ f_3 \end{bmatrix}$$</p>
+<p>$$\sigma* = -K*^T K^-1 K* + K** = -K*^T K^-1 K* + 1$$</p>
 
       
     </div>
