@@ -67,12 +67,12 @@
 </blockquote>
 <a id="more"></a>
 <p>高斯过程回归的假设是：
-给定一些$x$的值（特征值），我们对$f$建模（预测值），并假设对应的这些f值服从 <strong>联合正态分布</strong>。</p>
-<p>具体来说，假设我们现在目前拥有一个训练集包含3个样本，$(x_1,f_1),(x_2,f_2),(x_3,f_3)$。这三个$f$可以存在噪声，也可以没有。这里先假设没有，因此$f$的分布可以写为：</p>
+给定一些$x$的值（特征值），我们对$y$建模（预测值），并假设对应的这些y值服从 <strong>联合正态分布</strong>。</p>
+<p>具体来说，假设我们现在目前拥有一个训练集包含3个样本，$(x_1,y_1),(x_2,y_2),(x_3,y_3)$。这三个$y$可以存在噪声，也可以没有。这里先假设没有，因此$y$的分布可以写为：</p>
 <p>$$\begin{bmatrix}
-f_1\\
-f_2\\
-f_3
+y_1\\
+y_2\\
+y_3
 \end{bmatrix} \sim N\left( \begin{bmatrix}
 0\\
 0\\
@@ -83,18 +83,18 @@ K_{21} &amp; K_{22} &amp; K_{23}\\
 K_{31} &amp; K_{32} &amp; K_{33}
 \end{bmatrix}\right)$$</p>
 <p>这个公式关键是协方差矩阵$K$。在这里引出了高斯过程的另一个重要假设：
-如果两个x比较相似（eg,空间中离得比较近），那么对应的y值的相关性也就较高。具体地说，针对上面的例子，如果$x_1$离$x_2$要比$x_3$更近，那么依据假设 $f_3$和$f_2$ 的correlation 要比 $f_3$和$f_1$的correlation 高。也就是说，协方差矩阵中的每个元素$K_{ij}$为对应的两个$x$值$x_i, x_j$之间的相似性度量。说到相似性度量，本文不准备引出metric learning，仅提及矩阵$K$的一个重要性质：
+如果两个x比较相似（eg,空间中离得比较近），那么对应的y值的相关性也就较高。具体地说，针对上面的例子，如果$x_1$离$x_2$要比$x_3$更近，那么依据假设 $y_3$和$y_2$ 的correlation 要比 $y_3$和$y_1$的correlation 高。也就是说，协方差矩阵中的每个元素$K_{ij}$为对应的两个$x$值$x_i, x_j$之间的相似性度量。说到相似性度量，本文不准备引出metric learning，仅提及矩阵$K$的一个重要性质：
 合法的协方差矩阵就是半正定矩阵 (symmetric) Positive Semi-definite Matrix。
 So far so good.
 在矩阵$K$中，可以使用kernal来计算相似性（根据Mercer Theorem）。支持向量及SVM中的RBF就是一种常用的kernal。在RBF的定义下，矩阵$K$中元素的计算如下：</p>
 <p>$$K_{ij} = e^{-\lambda \|x_i - x_j\|^2}$$</p>
-<p>当两个$x$空间中距离无穷远时，那么对应的$y$值的相关性为0，当两个$x$空间中距离为0时，那么对应的$y$值的相关性为1。在3个已知训练样本的基础上，对新来的样本$x^*$的$f^*$求解之前需要具备一个条件，那就是：
-<strong>$f^*$ 和 训练集里的$f_1$, $f_2$, $f_3$ 同属于一个（4维的）联合正态分布。用数学语言来表达就是：</strong></p>
+<p>当两个$x$空间中距离无穷远时，那么对应的$y$值的相关性为0，当两个$x$空间中距离为0时，那么对应的$y$值的相关性为1。在3个已知训练样本的基础上，对新来的样本$x^*$的$y^*$求解之前需要具备一个条件，那就是：
+<strong>$y^*$ 和 训练集里的$y_1$, $y_2$, $y_3$ 同属于一个（4维的）联合正态分布。用数学语言来表达就是：</strong></p>
 <p>$$\begin{bmatrix}
-f_1\\
-f_2\\
-f_3\\
-f_*
+y_1\\
+y_2\\
+y_3\\
+y_*
 \end{bmatrix} \sim N\left( \begin{bmatrix}
 0\\
 0\\
@@ -107,17 +107,17 @@ K_{31} &amp; K_{32} &amp; K_{33} &amp; K_{3*}\\
 K_{*1} &amp; K_{*2} &amp; K_{*3} &amp; K_{**}
 \end{bmatrix}\right)$$</p>
 <p>其中，$ \begin{bmatrix}K_{11} &amp; K_{12} &amp; K_{13}\\ K_{21} &amp; K_{22} &amp; K_{23}\\ K_{31} &amp; K_{32} &amp; K_{33}
-\end{bmatrix} $ 是原先的矩阵$K$，$ \begin{bmatrix}K_{1*}\\ K_{2*}\\ K_{3*} \end{bmatrix} $ = $ \begin{bmatrix}K_{*1} &amp; K_{*2} &amp; K_{*3} \end{bmatrix} ^T $ 作为矩阵$K_{*}$。直接利用边缘分布性质可以求出$f^*$的后验分布:
-$$ f^*(x,f,x_{*}) \sim N \left( \mu*, \sigma* \right) $$</p>
-<p>$$\mu^* = K_{*}^{T} K^{-1} \begin{bmatrix}f_1\\ f_2\\ f_3 \end{bmatrix}$$</p>
+\end{bmatrix} $ 是原先的矩阵$K$，$ \begin{bmatrix}K_{1*}\\ K_{2*}\\ K_{3*} \end{bmatrix} $ = $ \begin{bmatrix}K_{*1} &amp; K_{*2} &amp; K_{*3} \end{bmatrix} ^T $ 作为矩阵$K_{*}$。直接利用边缘分布性质可以求出$y^*$的后验分布:
+$$ y^*(x,y,x_{*}) \sim N \left( \mu*, \sigma* \right) $$</p>
+<p>$$\mu^* = K_{*}^{T} K^{-1} \begin{bmatrix}y_1\\ y_2\\ y_3 \end{bmatrix}$$</p>
 <p>$$\sigma^* = -K_{*}^{T} K^{-1} K_{*} + K_{**} = -K_{*}^{T} K^{-1} K_{*} + 1$$</p>
 <p>至此，无噪声条件下的高斯过程基本就是以上。下面开始推导存在噪声的高斯过程与岭回归之间的关系。存在噪声的预测值的分布：
 $$y = f(x) + \epsilon \ \ \ \ \ \ \ \ \epsilon \sim N(0,\sigma^2)$$</p>
 <p>$$\begin{bmatrix}
-f_1\\
-f_2\\
-f_3\\
-f_*
+y_1\\
+y_2\\
+y_3\\
+y_*
 \end{bmatrix} \sim N\left( \begin{bmatrix}
 0\\
 0\\
@@ -128,11 +128,11 @@ K&#39; &amp; K_{*}\\
 K_{*}^T &amp; K_{**}
 \end{bmatrix}\right)\ \ \ \ \ K&#39; = K + \sigma^2I$$</p>
 <p>因此，</p>
-<p>$$ f^*(x,f,x_{*}) \sim N \left( \mu*, \sigma* \right) $$</p>
-<p>$$\mu^* = K_{*}^{T} K&#39;^{-1} \begin{bmatrix}f_1\\ f_2\\ f_3 \end{bmatrix}$$</p>
+<p>$$ y^*(x,y,x_{*}) \sim N \left( \mu*, \sigma* \right) $$</p>
+<p>$$\mu^* = K_{*}^{T} K&#39;^{-1} \begin{bmatrix}y_1\\ y_2\\ y_3 \end{bmatrix}$$</p>
 <p>$$\sigma^* = -K_{*}^{T} K&#39;^{-1} K_{*} + K_{**} = -K_{*}^{T} K&#39;^{-1} K_{*} + 1$$</p>
-<p>其中，$K_*$是一个3维向量，$K_{**} = 1$，令$K&#39;^{-1} \begin{bmatrix}f_1 &amp; f_2 &amp; f_3 \end{bmatrix}^T$为$\vec \alpha$，那么$\mu^*$就可以改写为：
-$$E(f^*) = \mu^* = \sum_{i = 1}^3 {\alpha_i \cdot K(x_i,x_*)}$$，从这个角度看，测试样本预测值的期望是其与现有样本特征Kernal距离的线性组合。与岭回归的目标函数与算式相比：
+<p>其中，$K_*$是一个3维向量，$K_{**} = 1$，令$K&#39;^{-1} \begin{bmatrix}y_1 &amp; y_2 &amp; y_3 \end{bmatrix}^T$为$\vec \alpha$，那么$\mu^*$就可以改写为：
+$$E(y^*) = \mu^* = \sum_{i = 1}^3 {\alpha_i \cdot K(x_i,x_*)}$$，从这个角度看，测试样本预测值的期望是其与现有样本特征Kernal距离的线性组合。与岭回归的目标函数与算式相比：
 $$目标函数：\ \ \ \ \hat{\theta} = argmin_{\theta}\|y-x\theta\|_2^2 + \delta^2\|\theta\|^2$$
 $$预测函数：\ \ \ \ y_{*} = x_*\theta = x_*x^T[xx^T+\delta I]^{-1}y$$
 把向量的点击看做是最简单的核函数即：$K(x,x_{*}) = xx_{*}^T$ 又有：$K&#39;&#39; = K + \delta^2I = xx^T + \delta^2I$
