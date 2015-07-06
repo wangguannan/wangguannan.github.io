@@ -77,6 +77,8 @@
 <p>在tree的基础上通过改变连边的概率和增加环 变为 E-R图：包含有有$n$个节点的E-R图中，节点的平均度为$d$，以一定概率$p$产生连边（二项分布）。证明：当$d(n) &gt; (1 + \epsilon)log(n)$ 且 $d(n)/n \rightarrow 0$时，E-R的直径数量级也是$log(n)/log(d)$。证明如下：</p>
 <p>根据Chernoff Bounds原理有$Pr(d/3 \leq d_i \leq 3d) \geq 1-e^{-d}$，所有节点度都满足的概率为$Pr(d/3 \leq d_{all} \leq 3d) \geq (1-e^{-d})^n$。当$d(n) &gt; (1 + \epsilon)log(n)$，且$n$很大时时，上式变为：$Pr(d/3 \leq d_{all} \leq 3d) &gt; (1-(1/n)^{1+\epsilon})^n \rightarrow exp(-n^{-\epsilon}) \rightarrow 1$。因此$log(n)/log(3d) &lt; l &lt; log(n)/log(d/3)$。当$d$足够大时，有$l = log(n)/log(d)$。</p>
 <p>针对环的问题，其实影响不大，因为：随着$l$的增加，新的节点以指数级增长，扩展$k$步后，仍有$n-d^k$个节点未被扩展，当$k &lt; log(n)/log(d)$ 时，$n-d^k$ 远大于 $d^k$，在网络直径计算中，与新增的节点相比现有节点中存在的环可以忽略不计。</p>
+<p><strong> 当前全世界有70亿人，只要每个人平均认识50个人，那么全世界的任意两个人之间一般只隔着5个人，即通过6步介绍即可建立联系。 </strong>
+E-R图可以解释六度分隔的现象，$log(7000000000)/log(50) = 5.79$。当然后来被更现实的模型替代，但是其思想影响了大半个世纪之久。</p>
 
       
     </div>
