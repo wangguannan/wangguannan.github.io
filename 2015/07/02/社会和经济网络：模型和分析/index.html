@@ -73,7 +73,7 @@
 <p>$$constraint(Guadagni) = 4*(1/4)^2 = 0.25$$
 从constaint来看，影响力排名为：Medici &gt; Guadagni &gt; Strozzi，与betweenness反映的一致。</p>
 <h4 id="Note2_平均路径、直径、Tree、ER图"><strong> <font color="sky blue">Note2_平均路径、直径、Tree、ER图</font> </strong></h4><p><img src="/img/0702_2.png" alt=""></p>
-<p>先计算tree的直径和平均路径长度。如上图所示，从绿色节点开始向外连边（拓展），每个节点有4个邻居。拓展l步（最长的路径/直径是2l）后图中节点的数目是$d+d(d-1)+...+d(d-1)^{l-1} = d((d-1)^l-1)/(d-2) \approx (d-1)^l$</p>
+<p>先计算tree的直径。如上图所示，从绿色节点开始向外连边（拓展），每个节点有4个邻居。拓展l步（最长的路径/直径是2l）后图中除去root的节点数目是$d+d(d-1)+...+d(d-1)^{l-1} = d((d-1)^l-1)/(d-2) \approx (d-1)^l$，因此如果一个点要与n个节点存在路径的话，大约需要$l = log(n)/log(d)$步。</p>
 
       
     </div>
