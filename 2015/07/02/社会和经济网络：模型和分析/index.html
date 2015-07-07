@@ -66,12 +66,17 @@
 <p>这是我学习斯坦福大学课程的一个个人笔记，记录的是个人感觉有趣的东西。会从2015年7月3日开始每天攒一点点。希望在正式入职阿里之前完成。如有任何疑问，欢迎留言或者托梦。</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="Week_1"><a href="#Week 1">Week 1</a></h2><h4 id="Note1_betweenness、constraint"><strong> <font color="sky blue">Note1_betweenness、constraint</font> </strong></h4><p><img src="/img/0702_1.png" alt=""></p>
+<h2 id="Week_1"><a href="#Week 1">Week 1</a></h2><h4 id="Note1_centrality、constraint"><strong> <font color="sky blue">Note1_centrality、constraint</font> </strong></h4><p><img src="/img/0702_1.png" alt=""></p>
 <p>家族联姻网络，betweenness最高的家族是Medici，在当时拥有的财富和权利比其他家族更多。我们还可以用constraint来量化：</p>
 <p>$$constraint(Medici) = 4*(1/6)^2+2*(1/6+1/6*1/3)^2 = 0.21$$</p>
 <p>$$constraint(Strozzi) = 2*(1/4+1/4*1/3)^2 + (1/4+2*1/4*1/3)^2 + (1/4)^2 = 0.46$$</p>
-<p>$$constraint(Guadagni) = 4*(1/4)^2 = 0.25$$
-从constaint来看，影响力排名为：Medici &gt; Guadagni &gt; Strozzi，与betweenness反映的一致。</p>
+<p>$$constraint(Guadagni) = 4*(1/4)^2 = 0.25$$</p>
+<p>$$Closeness = (n-1)/(\sum_j{l_{i,j}})$$
+$$Closeness(Medici) = 14/25$$
+$$Closeness(Strozzi) = 14/32$$
+$$Closeness(Guadagni) = 14/26$$</p>
+<p>从constaint来看，影响力排名为：Medici &gt; Guadagni &gt; Strozzi，与betweenness反映的一致。
+从Closeness来看，影响力排名为：Medici &gt; Guadagni &gt; Strozzi，与betweenness反映的一致。</p>
 <h4 id="Note2_直径、Tree、ER图、Six_Degrees_of_Separation"><strong> <font color="sky blue">Note2_直径、Tree、ER图、Six Degrees of Separation</font> </strong></h4><p><img src="/img/0702_2.png" alt=""></p>
 <p>先计算tree的直径。如上图所示，从绿色节点开始向外连边（拓展），每个节点有4个邻居。拓展l步（最长的路径/直径是2l）后图中除去root的节点数目是$d+d(d-1)+...+d(d-1)^{l-1} = d((d-1)^l-1)/(d-2) \approx (d-1)^l \approx d^l$，因此如果一个点要与其他$n-1$个节点可达的话，大约需要$l = log(n)/log(d)$步。即在包含有$n$个节点的tree中，假设节点度为$d$，那么该网络直径的数量级为$log(n)/log(d)$</p>
 <p>在tree的基础上通过改变连边的概率和增加环 变为 E-R图：包含有有$n$个节点的E-R图中，节点的平均度为$d$，以一定概率$p$产生连边（二项分布）。证明：当$d(n) &gt; (1 + \epsilon)log(n)$ 且 $d(n)/n \rightarrow 0$时，E-R的直径数量级也是$log(n)/log(d)$。证明如下：</p>
@@ -79,7 +84,8 @@
 <p>针对环的问题，其实影响不大，因为：随着$l$的增加，新的节点以指数级增长，扩展$k$步后，仍有$n-d^k$个节点未被扩展，当$k &lt; log(n)/log(d)$ 时，$n-d^k$ 远大于 $d^k$，在网络直径计算中，与新增的节点相比现有节点中存在的环可以忽略不计。</p>
 <p><strong> 当前全世界有70亿人，只要每个人平均认识50个人，那么全世界的任意两个人之间一般只隔着5个人，即通过6步介绍即可建立联系。 </strong>
 E-R图可以解释六度分隔的现象，$log(7000000000)/log(50) = 5.79$。当然后来被更合理的模型替代，但是其思想影响了大半个世纪之久。</p>
-<h4 id="Note3_无标度与分形，从不同尺度上观察网络的结构类似"><strong> <font color="sky blue">Note3_无标度与分形，从不同尺度上观察网络的结构类似</font> </strong></h4>
+<h4 id="Note3_无标度与分形，从不同尺度上观察网络的结构类似"><strong> <font color="sky blue">Note3_无标度与分形，从不同尺度上观察网络的结构类似</font> </strong></h4><h4 id="Note4_现实网络的聚集系数要高于E-R网络"><strong> <font color="sky blue">Note4_现实网络的聚集系数要高于E-R网络</font> </strong></h4><p><img src="/img/0702_3.png" alt=""></p>
+<h2 id="Week_2"><a href="#Week 2">Week 2</a></h2><h4 id="Note4_现实网络的聚集系数要高于E-R网络-1"><strong> <font color="sky blue">Note4_现实网络的聚集系数要高于E-R网络</font> </strong></h4>
       
     </div>
     <footer>
