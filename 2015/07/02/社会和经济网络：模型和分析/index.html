@@ -87,8 +87,8 @@ E-R图可以解释六度分隔的现象，$log(7000000000)/log(50) = 5.79$。当
 <h4 id="Note3_无标度与分形，从不同尺度上观察网络的结构类似"><strong> <font color="sky blue">Note3_无标度与分形，从不同尺度上观察网络的结构类似</font> </strong></h4><h4 id="Note4_现实网络的聚集系数要高于E-R网络"><strong> <font color="sky blue">Note4_现实网络的聚集系数要高于E-R网络</font> </strong></h4><p><img src="/img/0702_3.png" alt=""></p>
 <h2 id="Week_2"><a href="#Week 2">Week 2</a></h2><h4 id="Note1_现实网络的聚集系数要高于E-R网络"><strong> <font color="sky blue">Note1_现实网络的聚集系数要高于E-R网络</font> </strong></h4><h4 id="Note2_Eigenvector_centrality"><strong> <font color="sky blue">Note2_Eigenvector centrality</font> </strong></h4><p>Eigenvector centrality is one method of computing the &quot;centrality&quot; of each node in a graph. <strong> The assumption is that each node&#39;s centrality is the sum of the centrality values of the nodes that it is connected to. </strong> The nodes are drawn with a radius proportional to their centrality. The adjacency matrix and centrality matrix for the solution are shown. The centrality matrix is an eigenvector of the adjacency matrix such that all of its elements are positive.</p>
 <p><img src="/img/0702_4.png" alt=""></p>
-<p><strong> From HITS to Eigenvector </strong>
-HITS 将节点属性分为authority（入边）和hubs（出边）。因为大部分的页面既有inlinks，又有outlinks，所以这些页面同时具有Authority和Hub的属性。HITS算法的核心，就是根据一个有向结构图，计算得到每个节点的authority和hub值。</p>
+<p><strong> From HITS to Eigenvector </strong></p>
+<p>HITS 将节点属性分为authority（入边）和hubs（出边）。因为大部分的页面既有inlinks，又有outlinks，所以这些页面同时具有Authority和Hub的属性。HITS算法的核心，就是根据一个有向结构图，计算得到每个节点的authority和hub值。</p>
 <p>迭代算法：</p>
 <ol>
 <li>假设每个节点i都有一个authority值 x_i 和 一个hub值 y_i；</li>
