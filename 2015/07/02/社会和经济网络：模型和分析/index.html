@@ -96,8 +96,8 @@ PR(X) = PR(A) / 4 + PR(B) / 3
 Autority(X) = Hub(A) + Hub(B)
 这两个公式的区别，就在于HITS仅仅是一个求和，而PageRank相加的是概率。</p>
 <p>Pagerank和HITS类似，首先将Graph表示成一个矩阵，只是不再是邻接矩阵，而是转移概率矩阵：</p>
-<p>概率转移矩阵是一个随机矩阵（stochastic matrix），理想情况下，每一列之和等于1。</p>
 <p><img src="/img/0702_6.png" alt=""></p>
+<p>概率转移矩阵是一个随机矩阵（stochastic matrix），理想情况下，每一列之和等于1。</p>
 <p>PageRank computes (a variant of) eigenvector centrality, ,while the SVD apparently leads to the Hyperlink-Induced Topics Search (HITS) algorithm. </p>
 <p>Mathematically speaking, the PageRank is the dominant eigenvector of the (modified) adjacency matrix - as explained on the Wikipedia page - while HITS gives the dominant singular vector of the adjacency matrix. Both are defined by the global network of webpages and links between them, and both can be computed by only considering the node graph locally. So at first sight, I think that the computational cost is roughly equal.</p>
 
