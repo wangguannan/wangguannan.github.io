@@ -96,12 +96,14 @@ HITS 将节点属性分为authority（入边）和hubs（出边）。因为大�
 <li>于是在下一次迭代的时候，新的authority值x_i就等于节点i的inlinks对应节点的hub值之和</li>
 </ol>
 <p>算法向量化：</p>
-<p>定义邻接矩阵$L$,authority向量为$\vec x$，hub向量为$\vec y$，有：
-$$\vec x^{k} = L^T \vec y^{k-1}$$</p>
+<p>定义邻接矩阵$L$,authority向量为$\vec x$，hub向量为$\vec y$，有：</p>
+<p>$$\vec x^{k} = L^T \vec y^{k-1}$$</p>
 <p>$$\vec y^k = L \vec x^k$$</p>
 <p>$$k = k+1$$</p>
 <p>$$\vec x \vec y 归一化，防止溢出$$</p>
 <p>上面的公式又可以写为：</p>
+<p>$$\vec x^{k} = L^T L \vec x^{k-1}$$</p>
+<p>$$\vec y^{k} = L L^T \vec y^{k-1}$$</p>
 <p><strong> Pagerank vs (HITS)SVD </strong></p>
 <p>虽然大部分的文献中，都将PageRank解释成是基于”Random Surfer“模型，在随机游走的过程中，经常被访问到的page比很少被访问到的page更加的重要。但从随机的角度更难理解PageRank的计算公式。其实换个角度看，PageRank和HITS非常的类似。例如下面这张图：</p>
 <p><img src="/img/0702_5.png" alt=""></p>
