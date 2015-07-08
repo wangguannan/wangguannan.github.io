@@ -88,8 +88,8 @@ E-R图可以解释六度分隔的现象，$log(7000000000)/log(50) = 5.79$。当
 <h2 id="Week_2"><a href="#Week 2">Week 2</a></h2><h4 id="Note1_现实网络的聚集系数要高于E-R网络"><strong> <font color="sky blue">Note1_现实网络的聚集系数要高于E-R网络</font> </strong></h4><h4 id="Note2_Eigenvector_centrality"><strong> <font color="sky blue">Note2_Eigenvector centrality</font> </strong></h4><p>Eigenvector centrality is one method of computing the &quot;centrality&quot; of each node in a graph. <strong> The assumption is that each node&#39;s centrality is the sum of the centrality values of the nodes that it is connected to. </strong> The nodes are drawn with a radius proportional to their centrality. The adjacency matrix and centrality matrix for the solution are shown. The centrality matrix is an eigenvector of the adjacency matrix such that all of its elements are positive.</p>
 <p><img src="/img/0702_4.png" alt=""></p>
 <p><strong> Pagerank vs (HITS)SVD </strong></p>
-<p>虽然大部分的文献中，都将PageRank解释成是基于”Random Surfer“模型，在随机游走的过程中，经常被访问到的page比很少被访问到的page更加的重要。但从随机的角度更难理解PageRank的计算公式。其实换个角度看，PageRank和HITS非常的类似。例如下面这张图：
-<img src="/img/0702_5.png" alt=""></p>
+<p>虽然大部分的文献中，都将PageRank解释成是基于”Random Surfer“模型，在随机游走的过程中，经常被访问到的page比很少被访问到的page更加的重要。但从随机的角度更难理解PageRank的计算公式。其实换个角度看，PageRank和HITS非常的类似。例如下面这张图：</p>
+<p><img src="/img/0702_5.png" alt=""></p>
 <p>节点X有两个inlinks，分别来自节点A，B。A除了指向X以外，还指向了其它3个节点，而B还指向了其它的2个节点。那么节点X的PageRank的值就等于：
 PR(X) = PR(A) / 4 + PR(B) / 3
 这个公式已经非常近似于HITS中计算Authority的方法，例如X的Authority等于：
