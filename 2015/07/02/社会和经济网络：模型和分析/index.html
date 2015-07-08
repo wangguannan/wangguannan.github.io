@@ -87,7 +87,17 @@ E-R图可以解释六度分隔的现象，$log(7000000000)/log(50) = 5.79$。当
 <h4 id="Note3_无标度与分形，从不同尺度上观察网络的结构类似"><strong> <font color="sky blue">Note3_无标度与分形，从不同尺度上观察网络的结构类似</font> </strong></h4><h4 id="Note4_现实网络的聚集系数要高于E-R网络"><strong> <font color="sky blue">Note4_现实网络的聚集系数要高于E-R网络</font> </strong></h4><p><img src="/img/0702_3.png" alt=""></p>
 <h2 id="Week_2"><a href="#Week 2">Week 2</a></h2><h4 id="Note1_现实网络的聚集系数要高于E-R网络"><strong> <font color="sky blue">Note1_现实网络的聚集系数要高于E-R网络</font> </strong></h4><h4 id="Note2_Eigenvector_centrality"><strong> <font color="sky blue">Note2_Eigenvector centrality</font> </strong></h4><p>Eigenvector centrality is one method of computing the &quot;centrality&quot; of each node in a graph. <strong> The assumption is that each node&#39;s centrality is the sum of the centrality values of the nodes that it is connected to. </strong> The nodes are drawn with a radius proportional to their centrality. The adjacency matrix and centrality matrix for the solution are shown. The centrality matrix is an eigenvector of the adjacency matrix such that all of its elements are positive.</p>
 <p><img src="/img/0702_4.png" alt=""></p>
-<p><strong> Pagerank vs SVD </strong></p>
+<p><strong> Pagerank vs (HITS)SVD </strong></p>
+<p>虽然大部分的文献中，都将PageRank解释成是基于”Random Surfer“模型，在随机游走的过程中，经常被访问到的page比很少被访问到的page更加的重要。但从随机的角度更难理解PageRank的计算公式。其实换个角度看，PageRank和HITS非常的类似。例如下面这张图：
+<img src="/img/0702_5.png" alt=""></p>
+<p>节点X有两个inlinks，分别来自节点A，B。A除了指向X以外，还指向了其它3个节点，而B还指向了其它的2个节点。那么节点X的PageRank的值就等于：
+PR(X) = PR(A) / 4 + PR(B) / 3
+这个公式已经非常近似于HITS中计算Authority的方法，例如X的Authority等于：
+Autority(X) = Hub(A) + Hub(B)
+这两个公式的区别，就在于HITS仅仅是一个求和，而PageRank相加的是概率。</p>
+<p>Pagerank和HITS类似，首先将Graph表示成一个矩阵，只是不再是邻接矩阵，而是转移概率矩阵：</p>
+<p>概率转移矩阵是一个随机矩阵（stochastic matrix），理想情况下，每一列之和等于1。</p>
+<p><img src="/img/0702_6.png" alt=""></p>
 <p>PageRank computes (a variant of) eigenvector centrality, ,while the SVD apparently leads to the Hyperlink-Induced Topics Search (HITS) algorithm. </p>
 <p>Mathematically speaking, the PageRank is the dominant eigenvector of the (modified) adjacency matrix - as explained on the Wikipedia page - while HITS gives the dominant singular vector of the adjacency matrix. Both are defined by the global network of webpages and links between them, and both can be computed by only considering the node graph locally. So at first sight, I think that the computational cost is roughly equal.</p>
 
