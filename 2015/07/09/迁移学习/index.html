@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>结构洞与社会资本 | $\hat{y}$hat</title>
+  <title>迁移学习 | $\hat{y}$hat</title>
   <meta name="author" content="Guan-Nan Wang">
   
   <meta name="description" content="complex network, machine learning, Alibaba">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="结构洞与社会资本"/>
+  <meta property="og:title" content="迁移学习"/>
   <meta property="og:site_name" content="$\hat{y}$hat"/>
 
   
@@ -52,30 +52,24 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2015-06-21T09:24:00.000Z"><a href="/2015/06/21/结构洞与社会资本/">2015-06-21</a></time>
+        <time datetime="2015-07-09T03:35:21.000Z"><a href="/2015/07/09/迁移学习/">2015-07-09</a></time>
       
       
   
-    <h1 class="title">结构洞与社会资本</h1>
+    <h1 class="title">迁移学习</h1>
   
 
     </header>
     <div class="entry">
       
         <blockquote>
-<p>本文根据Ronald Burt报告节选而成。Burt是结构洞(Structrual hole)理论发明人，社会资本(Social capital)理论奠基人、美国AAAS院士、计算社会学的大牛。</p>
+<p>先挖个坑，以后慢慢填，这个内容让我联想到前不久华为无线指标预测的项目。</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="组织网络中的结构洞"><a href="#组织网络中的结构洞">组织网络中的结构洞</a></h2><p>在组织网络中，组织中的成员为节点，领导-跟随关系为连边，从直观上来看，权利集中在节点簇的交汇处（下图中的带颜色的节点）。中心菱形的节点连接了各个部门的高管。</p>
-<p><img src="/img/Sociogram_1.png" alt=""></p>
-<h2 id="结构洞的演变"><a href="#结构洞的演变">结构洞的演变</a></h2><p>下图展示了一个雇员在扩展社会资本前后的网络变化。扩展前的constraint要比扩展后的高，研究表明拥有低constraint的人在创造力、学习能力、职位晋升和薪资方面都要高于高constraint的人。</p>
-<p><img src="/img/hole_eval.png" alt=""></p>
-<h2 id="量化指标"><a href="#量化指标">量化指标</a></h2><p>betweenness与constraint都可以衡量一个节点在网络中的中介性质。在计算时，constraint利用局部信息，运行效率要比betweenness高一些。一般constraint低betweenness高的节点是网络中的结构洞，constraint与betweenness中等的节点是网络中的聚簇的中心点，而constraint高betweenness低的节点是网络中的一般成员。</p>
-<p><img src="/img/hole_measure.png" alt=""></p>
-<p>constraint的计算公式：</p>
-<p>$$ C_i = \sum_jc_{ij} = \sum_j\left(  p_{ij} + \sum_qp_{iq}p_{qj} \right)^2$$</p>
-<p>其中, $ {j,q} \in nbr(i) $， $p_{ij}^2$ 衡量节点 $i$ 对节点 $j$的投入，$2p_{ij}\sum_qp_{iq}p_{qj}$衡量节点 $i$ 与节点 $j$ 之间传递信息的冗余， $ \left( \sum_qp_{iq}p_{qj} \right)^2 $ 代表节点 $i$ 从邻居接受、获得相同信息的程度。结构洞的特点是对单一节点投入低、信息传递的冗余低，收发信息种类多样化。</p>
-<h2 id="总结"><a href="#总结">总结</a></h2><p><img src="/img/hole_summarize.png" alt=""></p>
+<h2 id="引言"><a href="#引言">引言</a></h2><p>首先学术界的问题定义：有两个数据集，一个是大一些的数据集叫source，还有一个是小一些的数据集叫target，我们的目的是希望通过某种相似性，把source上的知识迁移到target上，能让target数据集上的模型更好。知识迁移的两种基本思路，一个是借数据，借数据的思想是说source上有一些数据可以适当转换一下拿过来和target上的数据一起训练；一个是借参数，借参数的思想是说source上训练出来的模型的参数可以改改给target用。其中instance-base和feature-base都是借数据的思想，而parameter-base是借参数的思想。</p>
+<p>Instance Base和Feature Base的本质都是Target样本不够，需要借数据，适用场景为Model初始阶段，<strong> 只有Target自身样本的增加能显著带来auc提升，instance base/feature base才有可能有效果。</strong> 原因是借来的样本本身会带来一定的噪音，没有很完美的方案解决，因此学术界用instance/feature base解决的都是target上没有label的case，如果target上本身的数据的增加对auc都无帮助，那么带有噪音的数据就更不会有好的收益。</p>
+<p>Parameter Base的本质是Source和Target在参数上有一定的相似性，因此即使样本足够，parameter base也可能会带来增益，原因是如果真的具有相似性，数据充分的source训练的参数更稳定，在此基础上针对target的数据做微调有助于提升target参数的稳定性。在source训练的时候，只训练“可迁移”的特征，也就是common-part的部分，在target上再把所有特征带进去训练，这样就能近似保证common-part一样，individual-part有一定的差异。具体框架可以是这样：
+1、在source上训练出参数，由于source的数据多，所以这个参数variance会比较小，但是如果作为target上的参数，会带来一些bias2、因此我们在该参数的基础上，对target的数据再做一次训练，目标函数有两部分，第一部分为新参数在source上的拟合，第二部分为新参数在target上的loss及其约束。</p>
 
       
     </div>
@@ -85,7 +79,7 @@
         
   
   <div class="tags">
-    <a href="/tags/复杂网络/">复杂网络</a>
+    <a href="/tags/小无相功/">小无相功</a>
   </div>
 
         
@@ -99,7 +93,7 @@
 
   <section id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2015/06/21/结构洞与社会资本/" data-title="结构洞与社会资本" data-url="http://wangguannan.github.io/http://wangguannan.github.io/2015/06/21/结构洞与社会资本/"></div>
+    <div class="ds-thread" data-thread-key="2015/07/09/迁移学习/" data-title="迁移学习" data-url="http://wangguannan.github.io/http://wangguannan.github.io/2015/07/09/迁移学习/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
