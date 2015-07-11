@@ -119,6 +119,9 @@ Autority(X) = Hub(A) + Hub(B)
 <p>概率转移矩阵是一个随机矩阵（stochastic matrix），理想情况下，每一列之和等于1。当加入了random jump之后，变形后的matrix（irreducible）依然可以用特征向量求解节点重要性。</p>
 <p>PageRank computes (a variant of) eigenvector centrality, ,while the SVD apparently leads to the Hyperlink-Induced Topics Search (HITS) algorithm. </p>
 <p>Mathematically speaking, the PageRank is the dominant eigenvector of the (modified) adjacency matrix - as explained on the Wikipedia page - while HITS gives the dominant singular vector of the adjacency matrix. Both are defined by the global network of webpages and links between them, and both can be computed by only considering the node graph locally. So at first sight, I think that the computational cost is roughly equal.</p>
+<h2 id="Week_3"><a href="#Week 3">Week 3</a></h2><p>长尾未必是powerlaw，powerlaw的生成模型是100%根据preference（优先链接）的，而现实网络中朋友的交往也会存在着随机性。下图展示了4个网络在hybrid model上的拟合系数：</p>
+<p><img src="/img/0702_7.png" alt=""></p>
+<p>a接近1时，是泊松分布，a接近0时是powerlaw分布。</p>
 
       
     </div>
